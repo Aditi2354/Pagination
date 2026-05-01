@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { users } from './data'
+// import Pagination from './Pagination'
+import XYZ from './XYZ'
 import './App.css'
 
 function App() {
@@ -43,7 +45,10 @@ const prevPage =()=>{
     <button onClick={nextPage} disabled={currentpage==totalPages}>
     next
     </button>
+
+    <div><XYZ/></div>
     </div>
+
   )
 }
 
