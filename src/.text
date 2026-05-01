@@ -1,0 +1,50 @@
+import React, { useState } from 'react'
+import { useGetPostsByPageQuery } from '../../services/api'
+
+function XYZ() {
+  const [currentPage, setCurrentPage] = useState(1)
+  const { data: users = [], isFetching } = useGetPostsByPageQuery(currentPage)
+
+  return (
+    <div>
+      <h2> Pagination</h2>
+      <h3>Page {currentPage}</h3>
+
+      {isFetching && <p>Loading...</p>}
+
+      {users.map((user) => (
+        <p key={user.id}>
+          {user.id} - {user.title}
+        </p>
+      ))}
+
+      <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>
+        Prev
+      </button>
+
+      <button onClick={() => setCurrentPage((p) => p + 1)}>
+        Next
+      </button>
+    </div>
+  )
+}
+
+export default XYZ
+
+
+// src/services/api.js
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+export const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://jsonplaceholder.typicode.com' }),
+  endpoints: (builder) => ({
+    getPostsByPage: builder.query({
+      query: (page = 1) => `/posts?_page=${page}&_limit=10`,
+      // keep the cached data around for 5 minutes instead of default 60s:
+      keepUnusedDataFor: 60 * 5,
+    }),
+  }),
+})
+
+export const { useGetPostsByPageQuery } = api
